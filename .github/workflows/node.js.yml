@@ -21,3 +21,18 @@ jobs:
         python-version: '3.13'
     - run: python --version
     - run: echo "code deployed successfully"
+
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      -name : Run Express App
+       run: |
+        npm install 
+        npm start
+
+

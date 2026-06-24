@@ -28,10 +28,9 @@ jobs:
     needs: build
 
     steps:
-      - uses: actions/checkout@v4
-
-      -name : Run Express App
-       run: |
+    - uses: actions/checkout@v4
+    - name : Run Express App
+      run: |
         npm install 
         npm start
 

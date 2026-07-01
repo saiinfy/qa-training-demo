@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha"
+    "test": "mocha --reporter spec",
+    "test:report": "mocha --reporter mochawesome --reporter-options reportDir=reports,reportFilename=test-report.html,json=true"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -17,6 +18,7 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
+    "mochawesome": "^7.1.3",
     "supertest": "^6.3.3"
   }
 }

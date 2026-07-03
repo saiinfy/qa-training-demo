@@ -10,22 +10,21 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  install:
     runs-on: ubuntu-slim
-
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v6
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
-        python-version: '3.13'
-    - run: python --version
+        node-version: '18'
+        cache: 'npm'
     - run: echo "code deployed successfully"
 
   test:
-
+    needs: install
     runs-on: ubuntu-latest
-
+    
     steps:
     - uses: actions/checkout@v4
 
@@ -42,29 +41,11 @@ jobs:
       run: npm run test:report
       continue-on-error: true
 
-    - name: Generate test summary
-      if: always()
-      run: |
-        if [ -f reports/test-report.json ]; then
-          echo "# Test Report Summary" > reports/SUMMARY.md
-          echo "" >> reports/SUMMARY.md
-          TOTAL=$(jq '.stats.tests' reports/test-report.json)
-          PASSES=$(jq '.stats.passes' reports/test-report.json)
-          FAILURES=$(jq '.stats.failures' reports/test-report.json)
-          DURATION=$(jq '.stats.duration' reports/test-report.json)
-          echo "**Total Tests:** $TOTAL" >> reports/SUMMARY.md
-          echo "**Passed:** $PASSES ✅" >> reports/SUMMARY.md
-          echo "**Failed:** $FAILURES ❌" >> reports/SUMMARY.md
-          echo "**Duration:** ${DURATION}ms" >> reports/SUMMARY.md
-          echo "" >> reports/SUMMARY.md
-          echo "[View Full HTML Report](test-report.html)" >> reports/SUMMARY.md
-        fi
-
     - name: Upload test reports as artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-reports
         path: reports/
-        retention-days: 25
+        retention-days: 30
         if-no-files-found: warn
